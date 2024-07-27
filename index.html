@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listing Page with Editable Title</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .listing-container {
+            padding: 20px;
+            max-width: 1000px;
+            display: flex;
+            gap: 20px;
+            align-items: flex-start;
+        }
+
+        .large-picture-container {
+            flex: 1;
+            max-width: 416.6px;
+        }
+
+        .large-picture {
+            width: 416.6px;
+            height: 290px;
+            border: 1px solid #ccc;
+            position: relative;
+        }
+
+        .large-picture img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .additional-pictures-container {
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .picture-box {
+            border: 1px solid #ccc;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .additional-pictures {
+            width: 89px;
+            height: 63.04px;
+        }
+
+        .additional-pictures img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 89px;
+            height: 63.04px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .description-container {
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .bg_cvr {
+            width: 100%;
+            max-width: 751px;
+            height: 200px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            padding: 20px;
+            box-sizing: border-box;
+            flex: 1;
+        }
+
+        .description-textarea {
+            width: 100%;
+            height: 100%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+            resize: none;
+            overflow: auto;
+        }
+
+        .price-container {
+            background: white;
+            padding: 10px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 4px;
+            width: 150px;
+        }
+
+        .price-span {
+            display: inline-block;
+            background-color: #28a745; /* Green background */
+            color: white;
+            text-align: center;
+            line-height: 33.6px;
+            font-size: 24px; /* Adjust font size as needed */
+            font-weight: bold;
+            border-radius: 4px;
+            padding: 5px 10px;
+        }
+
+        .price-input {
+            display: none;
+            width: 100%;
+            height: 33.6px;
+            font-size: 24px;
+            text-align: center;
+            border: none;
+            background: transparent;
+            color: #28a745;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+
+        .reply-link-container {
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .reply-link {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 16px;
+            font-family: Arial, sans-serif;
+            margin: 5px;
+        }
+
+        .reply-link:hover {
+            text-decoration: underline;
+        }
+
+        .reply-link .emoji {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+
+        .social-buttons {
+            position: fixed;
+            right: 20px;
+            top: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .social-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 37px;
+            height: 37px;
+            border-radius: 4px;
+            background-color: #ddd;
+            color: #333;
+            font-size: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+            text-align: center;
+        }
+
+        .social-button:hover {
+            background-color: #bbb;
+        }
+
+        .facebook {
+            background: #3b5998;
+            color: #fff;
+        }
+
+        .pinterest {
+            background: #e60023;
+            color: #fff;
+        }
+
+        .twitter {
+            background: #1da1f2;
+            color: #fff;
+        }
+
+        .reddit {
+            background: #ff4500;
+            color: #fff;
+        }
+
+        .title-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .title-input {
+            display: none;
+            font-size: 24px;
+            border: none;
+            background: transparent;
+            color: #007bff;
+            width: auto;
+        }
+
+        .title-link {
+            font-size: 24px;
+            color: #007bff;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="title-container">
+        <input type="text" id="titleInput" class="title-input" placeholder="Enter title">
+        <a id="titleLink" href="#" class="title-link">Your Title Here</a>
+    </div>
+
+    <div class="listing-container">
+        <div class="large-picture-container">
+            <div class="picture-box large-picture">
+                <img id="largePicture" src="" alt="Large Picture">
+                <input type="file" class="file-input" id="large-picture-input">
+            </div>
+        </div>
+        
+        <div class="additional-pictures-container">
+            <button id="add-picture-btn">📷 More</button>
+        </div>
+    </div>
+
+    <div class="description-container">
+        <div class="bg_cvr">
+            <textarea class="description-textarea" placeholder="Type your description here..."></textarea>
+        </div>
+
+        <div class="price-container">
+            <span id="priceSpan" class="price-span">$98,980</span>
+            <input type="text" id="priceInput" class="price-input" placeholder="Enter price">
+        </div>
+    </div>
+
+    <div class="reply-link-container">
+        <a href="https://enull700.vercel.app/" class="reply-link" target="_blank">
+            <span class="emoji">📩</span>
+            Reply to Seller
+        </a>
+    </div>
+
+    <div class="social-buttons">
+        <a href="https://www.facebook.com/sharer/sharer.php?u=YOUR_URL" class="social-button facebook" target="_blank" title="Share on Facebook">
+            F
+        </a>
+        <a href="https://pinterest.com/pin/create/button/?url=YOUR_URL" class="social-button pinterest" target="_blank" title="Pin it on Pinterest">
+            P
+        </a>
+        <a href="https://twitter.com/intent/tweet?url=YOUR_URL&text=Check%20this%20out!" class="social-button twitter" target="_blank" title="Share on Twitter">
+            T
+        </a>
+        <a href="https://www.reddit.com/submit?url=YOUR_URL&title=Check%20this%20out!" class="social-button reddit" target="_blank" title="Share on Reddit">
+            R
+        </a>
+    </div>
+
+    <script>
+        // Handle title editing
+        const titleInput = document.getElementById('titleInput');
+        const titleLink = document.getElementById('titleLink');
+
+        titleLink.addEventListener('click', function() {
+            titleLink.style.display = 'none';
+            titleInput.style.display = 'inline';
+            titleInput.value = titleLink.textContent;
+            titleInput.focus();
+        });
+
+        titleInput.addEventListener('blur', function() {
+            const newTitle = titleInput.value.trim();
+            if (newTitle) {
+                titleLink.textContent = newTitle;
+                titleLink.href = '#'; // Or set this to a specific URL if required
+                localStorage.setItem('title', newTitle);
+            }
+            titleInput.style.display = 'none';
+            titleLink.style.display = 'inline';
+        });
+
+        // Load saved title
+        const savedTitle = localStorage.getItem('title');
+        if (savedTitle) {
+            titleLink.textContent = savedTitle;
+        }
+
+        // Handle image inputs
+        function createFileInput(pictureBox, keyPrefix) {
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.className = 'file-input';
+
+            fileInput.addEventListener('change', function(event) {
+                const file = event.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        pictureBox.querySelector('img').src = e.target.result;
+                        localStorage.setItem(keyPrefix, e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            return fileInput;
+        }
+
+        function loadImages() {
+            const largePictureBox = document.querySelector('.large-picture');
+            const largeImageData = localStorage.getItem('picture-large');
+            if (largeImageData) {
+                largePictureBox.querySelector('img').src = largeImageData;
+            }
+
+            const additionalPicturesContainer = document.querySelector('.additional-pictures-container');
+            let index = 0;
+            while (true) {
+                const imageData = localStorage.getItem('picture-small-' + index);
+                if (!imageData) break;
+
+                const pictureBox = document.createElement('div');
+                pictureBox.className = 'picture-box';
+                pictureBox.style.width = '89px';
+                pictureBox.style.height = '63.04px';
+
+                const image = document.createElement('img');
+                image.src = imageData;
+                image.alt = 'Additional Picture';
+                image.style.width = '100%';
+                image.style.height = '100%';
+                image.style.objectFit = 'cover';
+
+                pictureBox.appendChild(image);
+                additionalPicturesContainer.appendChild(pictureBox);
+
+                index++;
+            }
+        }
+
+        document.getElementById('add-picture-btn').addEventListener('click', function() {
+            const newPictureBox = document.createElement('div');
+            newPictureBox.className = 'picture-box';
+            newPictureBox.style.width = '89px';
+            newPictureBox.style.height = '63.04px';
+
+            const newImage = document.createElement('img');
+            newImage.src = '';
+            newImage.alt = 'Additional Picture';
+            newImage.style.width = '100%';
+            newImage.style.height = '100%';
+            newImage.style.objectFit = 'cover';
+
+            newPictureBox.appendChild(newImage);
+
+            document.querySelector('.additional-pictures-container').appendChild(newPictureBox);
+
+            const fileInput = createFileInput(newPictureBox, 'picture-small-new');
+            newPictureBox.appendChild(fileInput);
+
+            newPictureBox.addEventListener('click', function() {
+                fileInput.click();
+            });
+        });
+
+        const initialPictureBox = document.querySelector('.large-picture');
+        const initialFileInput = createFileInput(initialPictureBox, 'picture-large');
+        initialPictureBox.appendChild(initialFileInput);
+        initialPictureBox.addEventListener('click', function() {
+            initialFileInput.click();
+        });
+
+        window.addEventListener('load', loadImages);
+
+        // Handle price editing
+        const priceSpan = document.getElementById('priceSpan');
+        const priceInput = document.getElementById('priceInput');
+
+        priceSpan.addEventListener('click', function() {
+            priceSpan.style.display = 'none';
+            priceInput.style.display = 'block';
+            priceInput.value = priceSpan.textContent;
+            priceInput.focus();
+        });
+
+        priceInput.addEventListener('blur', function() {
+            const newPrice = priceInput.value.trim();
+            if (newPrice) {
+                priceSpan.textContent = newPrice;
+                localStorage.setItem('price', newPrice);
+            }
+            priceInput.style.display = 'none';
+            priceSpan.style.display = 'inline-block';
+        });
+
+        // Load saved price
+        const savedPrice = localStorage.getItem('price');
+        if (savedPrice) {
+            priceSpan.textContent = savedPrice;
+        }
+
+        // Handle description
+        const textarea = document.querySelector('.description-textarea');
+        const savedDescription = localStorage.getItem('description');
+        if (savedDescription) {
+            textarea.value = savedDescription;
+        }
+
+        textarea.addEventListener('input', () => {
+            localStorage.setItem('description', textarea.value);
+        });
+    </script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>More Photos Button</title>
+    <style>
+        .more-photos-button {
+            display: inline-block;
+            width: 89px;
+            height: 63.04px;
+            background-color: #007bff;
+            color: white;
+            text-align: center;
+            line-height: 63.04px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-family: Arial, sans-serif;
+        }
+        .more-photos-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <!-- More Photos button -->
+    <a href="https://enull800.vercel.app/" class="more-photos-button">More Photos</a>
+</body>
+</html>
