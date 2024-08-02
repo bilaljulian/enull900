@@ -1,5 +1,123 @@
 <!DOCTYPE html>
 <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with House Address Pinpoint</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 10px;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        #map {
+            width: 298px;
+            height: 300px;
+            border: 1px solid #ccc;
+        }
+        #search-container {
+            margin-top: 10px;
+        }
+        .leaflet-control-attribution {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+            padding: 5px;
+            box-shadow: 0 -1px 5px rgba(0, 0, 0, 0.1);
+            font-size: 12px;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: row;
+        }
+        .leaflet-control-attribution a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+        .leaflet-control-attribution a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <div id="search-container">
+        <input type="text" id="address" placeholder="Enter house address" />
+        <button onclick="addMarker()">Add Marker</button>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <script>
+        // Initialize the map
+        var map = L.map('map').setView([40.7128, -74.0060], 13); // Default to New York City
+
+        // Add a tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '' // Remove default attribution
+        }).addTo(map);
+
+        // Initialize the geocoder
+        var geocoder = L.Control.Geocoder.nominatim();
+
+        // Function to add marker based on address input
+        function addMarker() {
+            var address = document.getElementById('address').value;
+
+            geocoder.geocode(address, function(results) {
+                if (results.length > 0) {
+                    var result = results[0];
+                    var latLng = result.center;
+
+                    // Move map to new location and update marker
+                    map.setView(latLng, 15);
+
+                    // Remove existing markers
+                    if (map.hasLayer(marker)) {
+                        map.removeLayer(marker);
+                    }
+
+                    // Add new marker
+                    marker = L.marker(latLng).addTo(map)
+                        .bindPopup(result.name)
+                        .openPopup();
+                } else {
+                    alert('Address not found');
+                }
+            });
+        }
+
+        // Initialize marker (optional)
+        var marker = L.marker([40.7128, -74.0060]).addTo(map);
+
+        // Remove the default attribution control
+        map.attributionControl.setPrefix('');
+
+        // Add custom attribution control
+        var attributionControl = L.control({ position: 'bottomright' });
+        attributionControl.onAdd = function (map) {
+            var div = L.DomUtil.create('div', 'leaflet-control-attribution');
+            var year = new Date().getFullYear(); // Get current year
+            div.innerHTML = '<a href="https://e-null-xi.vercel.app/" target="_blank">Copyrighted. © eNull ' + year + '</a>';
+            return div;
+        };
+        attributionControl.addTo(map);
+    </script>
+</body>
+</html>	
+<!DOCTYPE html>
+<html lang="en">
 </head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
